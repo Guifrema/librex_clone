@@ -1,0 +1,31 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Signal {
+  id                 String                 @id @default(auto()) @map("_id") @db.ObjectId
+  code               Int                    @unique
+  name               String
+  description        String
+  portugueseSentence String
+  signalSentence     String
+  categories         String[]
+  representations    SignalRepresentation[]
+
+  @@map("signal")
+}
+
+model SignalRepresentation {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  videos   String[]
+  hands    Json
+  signalId String   @db.ObjectId
+  signal   Signal   @relation(fields: [signalId], references: [id])
+
+  @@map("signal_representation")
+}
